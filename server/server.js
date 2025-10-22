@@ -3,6 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const {
     createReport,
+    updateReport,
+    getReportByProvince,
     getAllReports,
     getReportsByProvince,
     deleteReport,
@@ -12,10 +14,36 @@ const {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Logger utility for server logging
+const serverLogger = {
+    info: (message, data) => {
+        console.log(`[INFO] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data) : '');
+    },
+    error: (message, error) => {
+        console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error ? error.message : '');
+    },
+    warn: (message, data) => {
+        console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data) : '');
+    },
+    debug: (message, data) => {
+        console.log(`[DEBUG] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data) : '');
+    }
+};
+
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
+// Request logging middleware
+app.use((req, res, next) => {
+    serverLogger.debug('Incoming request', {
+        method: req.method,
+        path: req.path,
+        ip: req.ip
+    });
+    next();
+});
 
 // Serve static files (frontend)
 app.use(express.static('../'));
@@ -46,52 +74,152 @@ app.get('/api/reports', (req, res) => {
     }
 });
 
-// Get reports by province
+// Get report by province code
 app.get('/api/reports/province/:provinceCode', (req, res) => {
     try {
         const { provinceCode } = req.params;
-        const reports = getReportsByProvince(provinceCode);
+
+        serverLogger.debug('Fetching report for province', { provinceCode });
+
+        const report = getReportByProvince(provinceCode);
+
+        if (!report) {
+            serverLogger.warn('Report not found for province', { provinceCode });
+            return res.status(404).json({
+                success: false,
+                message: 'Report not found for this province'
+            });
+        }
+
+        serverLogger.debug('Report fetched successfully', {
+            provinceCode,
+            hasData: !!report.situationOverview
+        });
+
         res.json({
             success: true,
-            count: reports.length,
-            data: reports
+            data: report
         });
     } catch (error) {
-        console.error('Error fetching reports by province:', error);
+        serverLogger.error('Error fetching report by province', error);
         res.status(500).json({
             success: false,
-            message: 'Failed to fetch reports',
-            error: error.message
+            message: 'Failed to fetch report',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }
 });
 
-// Create a new report
+// Update a report (by province code) with comprehensive validation
 app.post('/api/reports', (req, res) => {
     try {
         const reportData = req.body;
 
+        serverLogger.debug('Update report request received', {
+            hasProvince: !!reportData.province,
+            fieldsCount: Object.keys(reportData).length
+        });
+
         // Validate required fields
-        if (!reportData.province || !reportData.situationOverview) {
+        if (!reportData.province) {
+            serverLogger.warn('Missing province field in update request', {
+                receivedFields: Object.keys(reportData)
+            });
             return res.status(400).json({
                 success: false,
-                message: 'Missing required fields: province, situationOverview'
+                message: 'Missing required field: province'
             });
         }
 
-        const result = createReport(reportData);
+        if (!reportData.province.code) {
+            serverLogger.warn('Missing province code in update request');
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required field: province.code'
+            });
+        }
 
-        res.status(201).json({
+        // Call database update function
+        const result = updateReport(reportData);
+
+        // Check if update was successful
+        if (!result.success || result.changes === 0) {
+            serverLogger.warn('Update failed or province not found', {
+                provinceCode: reportData.province.code,
+                success: result.success,
+                changes: result.changes,
+                error: result.error
+            });
+            return res.status(404).json({
+                success: false,
+                message: result.error || 'Province not found in system'
+            });
+        }
+
+        serverLogger.info('Report updated successfully', {
+            provinceCode: reportData.province.code,
+            provinceName: reportData.province.name
+        });
+
+        res.json({
             success: true,
-            message: 'Report created successfully',
-            reportId: result.lastInsertRowid
+            message: 'Report updated successfully',
+            data: {
+                provinceCode: reportData.province.code,
+                provinceName: reportData.province.name,
+                updatedAt: new Date().toISOString()
+            }
         });
     } catch (error) {
-        console.error('Error creating report:', error);
+        serverLogger.error('Error updating report', error);
         res.status(500).json({
             success: false,
-            message: 'Failed to create report',
-            error: error.message
+            message: 'Failed to update report',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+});
+
+// Update a report via PUT endpoint
+app.put('/api/reports/:provinceCode', (req, res) => {
+    try {
+        const { provinceCode } = req.params;
+        const reportData = req.body;
+
+        const existingReport = getReportByProvince(provinceCode);
+
+        if (!existingReport) {
+            return res.status(404).json({
+                success: false,
+                message: 'Province not found in system'
+            });
+        }
+
+        const result = updateReport({
+            province: {
+                code: provinceCode,
+                name: existingReport.province.name
+            },
+            ...reportData
+        });
+
+        if (!result.success) {
+            return res.status(400).json({
+                success: false,
+                message: result.error || 'Failed to update report'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Report updated successfully'
+        });
+    } catch (error) {
+        serverLogger.error('Error updating report via PUT', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to update report',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }
 });
@@ -100,25 +228,31 @@ app.post('/api/reports', (req, res) => {
 app.delete('/api/reports/:id', (req, res) => {
     try {
         const { id } = req.params;
+
+        serverLogger.debug('Deleting report', { id });
+
         const result = deleteReport(id);
 
         if (result.changes === 0) {
+            serverLogger.warn('Report not found for deletion', { id });
             return res.status(404).json({
                 success: false,
                 message: 'Report not found'
             });
         }
 
+        serverLogger.info('Report deleted successfully', { id });
+
         res.json({
             success: true,
             message: 'Report deleted successfully'
         });
     } catch (error) {
-        console.error('Error deleting report:', error);
+        serverLogger.error('Error deleting report', error);
         res.status(500).json({
             success: false,
             message: 'Failed to delete report',
-            error: error.message
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }
 });
@@ -126,23 +260,35 @@ app.delete('/api/reports/:id', (req, res) => {
 // Delete all reports
 app.delete('/api/reports', (req, res) => {
     try {
+        serverLogger.warn('Deleting all reports - this operation cannot be undone');
+
         const result = deleteAllReports();
+
+        serverLogger.info('All reports deleted successfully', {
+            deletedCount: result.changes
+        });
+
         res.json({
             success: true,
-            message: `All reports deleted successfully (${result.changes} reports removed)`
+            message: `All reports deleted successfully (${result.changes} reports removed)`,
+            deletedCount: result.changes
         });
     } catch (error) {
-        console.error('Error deleting all reports:', error);
+        serverLogger.error('Error deleting all reports', error);
         res.status(500).json({
             success: false,
             message: 'Failed to delete reports',
-            error: error.message
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }
 });
 
 // 404 handler
 app.use((req, res) => {
+    serverLogger.warn('Route not found', {
+        method: req.method,
+        path: req.path
+    });
     res.status(404).json({
         success: false,
         message: 'Route not found'
@@ -151,11 +297,11 @@ app.use((req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-    console.error('Server error:', err);
+    serverLogger.error('Unhandled server error', err);
     res.status(500).json({
         success: false,
         message: 'Internal server error',
-        error: err.message
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
 });
 
@@ -175,7 +321,7 @@ app.listen(PORT, '0.0.0.0', () => {
         }
     }
 
-    console.log(`
+    const startupMessage = `
 ╔═══════════════════════════════════════════════════════╗
 ║   CARAGA Disaster Reporting System API Server        ║
 ╠═══════════════════════════════════════════════════════╣
@@ -186,11 +332,23 @@ app.listen(PORT, '0.0.0.0', () => {
 ║   - GET    /api/health                                ║
 ║   - GET    /api/reports                               ║
 ║   - GET    /api/reports/province/:code                ║
-║   - POST   /api/reports                               ║
+║   - POST   /api/reports       (Update by province)   ║
+║   - PUT    /api/reports/:code (Update by province)   ║
 ║   - DELETE /api/reports/:id                           ║
 ║   - DELETE /api/reports                               ║
+║                                                       ║
+║   Database: 5 provinces initialized                  ║
+║   Logging: Enabled (timestamps & request tracking)  ║
+║   Validation: Comprehensive province & data checks   ║
 ╚═══════════════════════════════════════════════════════╝
-    `);
+    `;
+
+    console.log(startupMessage);
+    serverLogger.info('Server started successfully', {
+        port: PORT,
+        localIP,
+        environment: process.env.NODE_ENV || 'production'
+    });
 });
 
 module.exports = app;
