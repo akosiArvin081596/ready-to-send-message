@@ -17,7 +17,7 @@
 				<form id="reportForm" class="report-form">
 					<!-- Situation Overview per Province -->
 					<div class="form-section">
-						<h3>Situation Overview per Province</h3>
+						<h3>Province Situation Overview</h3>
 						<div class="form-group">
 							<textarea
 								id="situationOverview"
@@ -34,16 +34,28 @@
 						<div class="form-group">
 							<label for="intensity">Intensity Level:</label>
 							<select id="intensity" name="intensity" required>
-								<option value="">-- Select Intensity Level --</option>
+								<option value="">
+									-- Select Intensity Level --
+								</option>
 								<option value="Not felt">Not felt</option>
-								<option value="Slightly felt">Slightly felt</option>
+								<option value="Slightly felt">
+									Slightly felt
+								</option>
 								<option value="Weak tremor">Weak tremor</option>
-								<option value="Lightly felt">Lightly felt</option>
-								<option value="Moderately felt">Moderately felt</option>
-								<option value="Strongly felt">Strongly felt</option>
+								<option value="Lightly felt">
+									Lightly felt
+								</option>
+								<option value="Moderately felt">
+									Moderately felt
+								</option>
+								<option value="Strongly felt">
+									Strongly felt
+								</option>
 								<option value="Very strong">Very strong</option>
 								<option value="Violent">Violent</option>
-								<option value="Extreme shaking">Extreme shaking</option>
+								<option value="Extreme shaking">
+									Extreme shaking
+								</option>
 							</select>
 						</div>
 					</div>
@@ -93,7 +105,9 @@
 						<h3>Damaged Houses</h3>
 						<div class="form-row">
 							<div class="form-group">
-								<label for="damagedTotally">Totally Damaged:</label>
+								<label for="damagedTotally"
+									>Totally Damaged:</label
+								>
 								<input
 									type="number"
 									id="damagedTotally"
@@ -103,7 +117,9 @@
 								/>
 							</div>
 							<div class="form-group">
-								<label for="damagedPartially">Partially Damaged:</label>
+								<label for="damagedPartially"
+									>Partially Damaged:</label
+								>
 								<input
 									type="number"
 									id="damagedPartially"
@@ -118,8 +134,15 @@
 					<!-- Casualties -->
 					<div class="form-section">
 						<h3>Casualties</h3>
-						<div style="margin-bottom: 1rem;">
-							<label><input type="checkbox" id="noCasualties" name="noCasualties" /> No Casualties</label>
+						<div style="margin-bottom: 1rem">
+							<label
+								><input
+									type="checkbox"
+									id="noCasualties"
+									name="noCasualties"
+								/>
+								No Casualties</label
+							>
 						</div>
 						<div id="casualtiesDetails">
 							<div class="form-row">
@@ -163,8 +186,19 @@
 
 						<!-- Tsunami Alert -->
 						<div class="form-group">
-							<label><input type="checkbox" class="alert-checkbox" data-remarks="tsunamiRemarks" /> Tsunami Alert</label>
-							<div id="tsunamiRemarks" class="remarks-field" style="display: none;">
+							<label
+								><input
+									type="checkbox"
+									class="alert-checkbox"
+									data-remarks="tsunamiRemarks"
+								/>
+								Tsunami Alert</label
+							>
+							<div
+								id="tsunamiRemarks"
+								class="remarks-field"
+								style="display: none"
+							>
 								<input
 									type="text"
 									placeholder="Enter remarks..."
@@ -175,8 +209,19 @@
 
 						<!-- Work and Class Suspension -->
 						<div class="form-group">
-							<label><input type="checkbox" class="alert-checkbox" data-remarks="suspensionRemarks" /> Work and Class Suspension</label>
-							<div id="suspensionRemarks" class="remarks-field" style="display: none;">
+							<label
+								><input
+									type="checkbox"
+									class="alert-checkbox"
+									data-remarks="suspensionRemarks"
+								/>
+								Work and Class Suspension</label
+							>
+							<div
+								id="suspensionRemarks"
+								class="remarks-field"
+								style="display: none"
+							>
 								<input
 									type="text"
 									placeholder="Enter remarks..."
@@ -187,8 +232,19 @@
 
 						<!-- Gale Warning -->
 						<div class="form-group">
-							<label><input type="checkbox" class="alert-checkbox" data-remarks="galeRemarks" /> Gale Warning</label>
-							<div id="galeRemarks" class="remarks-field" style="display: none;">
+							<label
+								><input
+									type="checkbox"
+									class="alert-checkbox"
+									data-remarks="galeRemarks"
+								/>
+								Gale Warning</label
+							>
+							<div
+								id="galeRemarks"
+								class="remarks-field"
+								style="display: none"
+							>
 								<input
 									type="text"
 									placeholder="Enter remarks..."
@@ -199,8 +255,19 @@
 
 						<!-- Power Interruption -->
 						<div class="form-group">
-							<label><input type="checkbox" class="alert-checkbox" data-remarks="powerRemarks" /> Power Interruption</label>
-							<div id="powerRemarks" class="remarks-field" style="display: none;">
+							<label
+								><input
+									type="checkbox"
+									class="alert-checkbox"
+									data-remarks="powerRemarks"
+								/>
+								Power Interruption</label
+							>
+							<div
+								id="powerRemarks"
+								class="remarks-field"
+								style="display: none"
+							>
 								<input
 									type="text"
 									placeholder="Enter remarks..."
@@ -211,8 +278,19 @@
 
 						<!-- Water Interruption -->
 						<div class="form-group">
-							<label><input type="checkbox" class="alert-checkbox" data-remarks="waterRemarks" /> Water Interruption</label>
-							<div id="waterRemarks" class="remarks-field" style="display: none;">
+							<label
+								><input
+									type="checkbox"
+									class="alert-checkbox"
+									data-remarks="waterRemarks"
+								/>
+								Water Interruption</label
+							>
+							<div
+								id="waterRemarks"
+								class="remarks-field"
+								style="display: none"
+							>
 								<input
 									type="text"
 									placeholder="Enter remarks..."
@@ -221,7 +299,6 @@
 							</div>
 						</div>
 					</div>
-
 
 					<div class="form-actions">
 						<button type="submit" class="btn btn-primary">

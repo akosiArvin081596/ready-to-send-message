@@ -21,7 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const alertCheckboxes = document.querySelectorAll('.alert-checkbox');
 
     // Event Listeners
-    logoutBtn.addEventListener('click', handleLogout);
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+    }
     reportForm.addEventListener('submit', handleSubmit);
 
     // Casualties checkbox handler
