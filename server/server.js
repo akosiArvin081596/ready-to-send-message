@@ -8,7 +8,8 @@ const {
     getAllReports,
     getReportsByProvince,
     deleteReport,
-    deleteAllReports
+    deleteAllReports,
+    resetAllReports
 } = require('./database');
 
 const app = express();
@@ -283,6 +284,32 @@ app.delete('/api/reports', (req, res) => {
     }
 });
 
+// Reset all reports (sets values to 0/null, keeps templates)
+app.post('/api/reports/reset', (req, res) => {
+    try {
+        serverLogger.warn('Resetting all reports to default values');
+
+        const result = resetAllReports();
+
+        serverLogger.info('All reports reset successfully', {
+            resetCount: result.changes
+        });
+
+        res.json({
+            success: true,
+            message: `All reports reset successfully (${result.changes} reports reset to default values)`,
+            resetCount: result.changes
+        });
+    } catch (error) {
+        serverLogger.error('Error resetting all reports', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to reset reports',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+});
+
 // 404 handler
 app.use((req, res) => {
     serverLogger.warn('Route not found', {
@@ -334,6 +361,7 @@ app.listen(PORT, '0.0.0.0', () => {
 ║   - GET    /api/reports/province/:code                ║
 ║   - POST   /api/reports       (Update by province)   ║
 ║   - PUT    /api/reports/:code (Update by province)   ║
+║   - POST   /api/reports/reset (Reset all to default) ║
 ║   - DELETE /api/reports/:id                           ║
 ║   - DELETE /api/reports                               ║
 ║                                                       ║

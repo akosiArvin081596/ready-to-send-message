@@ -408,6 +408,46 @@ function deleteAllReports() {
     }
 }
 
+// Reset all reports (sets values to 0/null, keeps templates)
+function resetAllReports() {
+    try {
+        const stmt = db.prepare(`
+            UPDATE reports
+            SET situation_overview = NULL,
+                intensity = NULL,
+                coordination_notes = NULL,
+                affected_families = 0,
+                affected_persons = 0,
+                damaged_totally = 0,
+                damaged_partially = 0,
+                no_casualties = 0,
+                injured = 0,
+                wounded = 0,
+                dead = 0,
+                tsunami_alert = 0,
+                tsunami_remarks = NULL,
+                suspension_alert = 0,
+                suspension_remarks = NULL,
+                gale_warning = 0,
+                gale_remarks = NULL,
+                power_interruption = 0,
+                power_remarks = NULL,
+                water_interruption = 0,
+                water_remarks = NULL,
+                updated_at = datetime('now', 'localtime')
+        `);
+
+        const result = stmt.run();
+
+        logger.warn('All reports reset to default values', { resetCount: result.changes });
+
+        return result;
+    } catch (error) {
+        logger.error('Error resetting all reports', error);
+        throw error;
+    }
+}
+
 // Export functions
 module.exports = {
     db,
@@ -417,5 +457,6 @@ module.exports = {
     getAllReports,
     getReportsByProvince,
     deleteReport,
-    deleteAllReports
+    deleteAllReports,
+    resetAllReports
 };

@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	const noDataMessage = document.getElementById("noDataMessage");
 	const copyableData = document.getElementById("copyableData");
 	const copyDataBtn = document.getElementById("copyDataBtn");
+	const resetDataBtn = document.getElementById("resetDataBtn");
 	const provincesContainer = document.getElementById("provincesContainer");
 
 	// Initialize
@@ -10,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Event Listeners
 	copyDataBtn.addEventListener("click", copyToClipboard);
+	resetDataBtn.addEventListener("click", resetAllData);
 
 	async function loadReports() {
 		try {
@@ -225,6 +227,40 @@ document.addEventListener("DOMContentLoaded", function () {
 			}, 2000);
 		} catch (err) {
 			alert("Failed to copy. Please manually select and copy the text.");
+		}
+	}
+
+	async function resetAllData() {
+		// Confirmation dialog
+		const confirmed = confirm("⚠️ Are you sure you want to reset all data to default values? This action cannot be undone.");
+		if (!confirmed) {
+			return;
+		}
+
+		try {
+			// Disable button and show loading state
+			const originalText = resetDataBtn.textContent;
+			resetDataBtn.disabled = true;
+			resetDataBtn.textContent = "Resetting...";
+
+			// Call API to reset all reports
+			await API.resetAllReports();
+
+			// Show success feedback
+			resetDataBtn.textContent = "✓ Data Reset!";
+			resetDataBtn.style.background = "var(--success-color)";
+
+			// Reload the page after a short delay
+			setTimeout(() => {
+				location.reload();
+			}, 1500);
+		} catch (error) {
+			console.error("Error resetting data:", error);
+			alert("Failed to reset data. Please try again.");
+
+			// Reset button state
+			resetDataBtn.disabled = false;
+			resetDataBtn.textContent = originalText;
 		}
 	}
 });
