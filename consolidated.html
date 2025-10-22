@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Consolidated Reports - CARAGA Region</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="container" style="max-width: 100%; padding: 1rem">
+			<div class="form-card" style="max-width: 100%">
+				<div class="header">
+					<h1>Consolidated Disaster Reports</h1>
+					<p>CARAGA Region (Region XIII)</p>
+				</div>
+
+				<div style="padding: 1.5rem">
+					<div
+						class="preview-section"
+						style="
+							background: var(--bg-color);
+							border: 2px solid var(--primary-color);
+							border-radius: 8px;
+							padding: 1.5rem;
+						"
+					>
+						<h3 style="margin: 0 0 1rem 0">
+							Copy Data (Text Format)
+						</h3>
+						<textarea
+							id="copyableData"
+							readonly
+							style="
+								width: 100%;
+								min-height: 300px;
+								font-family: 'Courier New', monospace;
+								font-size: 0.875rem;
+								padding: 1rem;
+								border: 1px solid var(--border-color);
+								border-radius: 6px;
+								background: white;
+								resize: vertical;
+							"
+						></textarea>
+						<p
+							style="
+								margin-top: 0.5rem;
+								margin-bottom: 1rem;
+								font-size: 0.75rem;
+								color: var(--text-secondary);
+							"
+						>
+							This text is formatted for easy copying and pasting.
+						</p>
+						<button
+							id="copyDataBtn"
+							class="btn btn-primary"
+							style="width: 100%"
+						>
+							📋 Copy Ready to Send Message
+						</button>
+					</div>
+
+					<div
+						id="noDataMessage"
+						class="alert alert-error"
+						style="display: none"
+					>
+						No reports found. Submit reports from the form page
+						first.
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="psgc-data.js"></script>
+		<script src="api.js"></script>
+		<script src="consolidated.js"></script>
+	</body>
+</html>

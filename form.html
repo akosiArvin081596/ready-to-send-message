@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Disaster Report Form</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="form-card">
+				<div class="header" style="position: relative">
+					<h1>Disaster Report</h1>
+					<p id="provinceDisplay"></p>
+					<div
+						style="
+							position: absolute;
+							top: 1rem;
+							right: 1rem;
+							display: flex;
+							gap: 0.5rem;
+						"
+					>
+						<button id="logoutBtn" class="btn btn-secondary btn-sm">
+							Logout
+						</button>
+					</div>
+				</div>
+
+				<form id="reportForm" class="report-form">
+					<div class="form-group">
+						<label for="situationOverview"
+							>Province Situation Overview</label
+						>
+						<textarea
+							id="situationOverview"
+							name="situationOverview"
+							rows="4"
+							required
+							placeholder="Describe the current situation in the province..."
+						></textarea>
+					</div>
+
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary">
+							Submit Report
+						</button>
+						<!-- <button type="button" id="previewBtn" class="btn btn-secondary">Preview Data</button> -->
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Modal for preview -->
+		<div id="previewModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Report Preview</h2>
+					<span class="close">&times;</span>
+				</div>
+				<div id="previewContent" class="modal-body"></div>
+				<div class="modal-footer">
+					<button id="downloadBtn" class="btn btn-primary">
+						Download JSON
+					</button>
+					<button class="btn btn-secondary close-modal">Close</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="psgc-data.js"></script>
+		<script src="api.js"></script>
+		<script src="form.js"></script>
+	</body>
+</html>
