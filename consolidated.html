@@ -10,11 +10,15 @@
 		<div class="container" style="max-width: 100%; padding: 1rem">
 			<div class="form-card" style="max-width: 100%">
 				<div class="header">
-					<h1>Consolidated Disaster Reports</h1>
+					<h1>Earthquake Progress Report</h1>
 					<p>CARAGA Region (Region XIII)</p>
 				</div>
 
 				<div style="padding: 1.5rem">
+					<!-- Provinces Section -->
+					<div id="provincesContainer"></div>
+
+					<!-- Copy Section -->
 					<div
 						class="preview-section"
 						style="
@@ -22,10 +26,11 @@
 							border: 2px solid var(--primary-color);
 							border-radius: 8px;
 							padding: 1.5rem;
+							margin-top: 2rem;
 						"
 					>
 						<h3 style="margin: 0 0 1rem 0">
-							Copy Data (Text Format)
+							Copy Ready to Send Message
 						</h3>
 						<textarea
 							id="copyableData"
@@ -64,10 +69,9 @@
 					<div
 						id="noDataMessage"
 						class="alert alert-error"
-						style="display: none"
+						style="display: none; margin-top: 1rem"
 					>
-						No reports found. Submit reports from the form page
-						first.
+						No reports found. Submit reports from the form page first.
 					</div>
 				</div>
 			</div>

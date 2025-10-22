@@ -38,6 +38,24 @@ async function createReport(reportData) {
     });
 }
 
+async function updateReport(reportData) {
+    return apiRequest('/reports', {
+        method: 'POST',
+        body: JSON.stringify(reportData)
+    });
+}
+
+async function updateReportByCode(provinceCode, situationOverview) {
+    return apiRequest(`/reports/${provinceCode}`, {
+        method: 'PUT',
+        body: JSON.stringify({ situationOverview })
+    });
+}
+
+async function getReport(provinceCode) {
+    return apiRequest(`/reports/province/${provinceCode}`);
+}
+
 async function getAllReports() {
     return apiRequest('/reports');
 }
@@ -65,6 +83,9 @@ async function checkServerHealth() {
 // Export functions
 window.API = {
     createReport,
+    updateReport,
+    updateReportByCode,
+    getReport,
     getAllReports,
     getReportsByProvince,
     deleteReport,

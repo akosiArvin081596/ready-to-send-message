@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\Users\\DSWDSRV-CARAGA\\Desktop\\Mobile\\server\")",
+      "Bash(findstr:*)",
+      "Bash(node:*)",
+      "Bash(dir:*)",
+      "Bash(ls:*)",
+      "Bash(del \"C:\\Users\\DSWDSRV-CARAGA\\Desktop\\Mobile\\server\\disaster_reports.db\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
