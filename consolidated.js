@@ -13,6 +13,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	copyDataBtn.addEventListener("click", copyToClipboard);
 	resetDataBtn.addEventListener("click", resetAllData);
 
+	// Archive button listener (if it exists)
+	const archiveDataBtn = document.getElementById("archiveDataBtn");
+	if (archiveDataBtn) {
+		archiveDataBtn.addEventListener("click", archiveAllData);
+	}
+
 	async function loadReports() {
 		try {
 			const response = await API.getAllReports();
@@ -261,6 +267,40 @@ document.addEventListener("DOMContentLoaded", function () {
 			// Reset button state
 			resetDataBtn.disabled = false;
 			resetDataBtn.textContent = originalText;
+		}
+	}
+
+	async function archiveAllData() {
+		// Confirmation dialog
+		const confirmed = confirm("📦 Archive current data to create space for new updates?\n\nThe 5 provinces will be marked as archived and new rows will be created for the next update.");
+		if (!confirmed) {
+			return;
+		}
+
+		try {
+			// Disable button and show loading state
+			const originalText = archiveDataBtn.textContent;
+			archiveDataBtn.disabled = true;
+			archiveDataBtn.textContent = "Archiving...";
+
+			// Call API to archive all reports
+			const response = await API.archiveAllReports();
+
+			// Show success feedback
+			archiveDataBtn.textContent = "✓ Archived!";
+			archiveDataBtn.style.background = "var(--success-color)";
+
+			// Reload the page after a short delay
+			setTimeout(() => {
+				location.reload();
+			}, 1500);
+		} catch (error) {
+			console.error("Error archiving data:", error);
+			alert("Failed to archive data. Please try again.");
+
+			// Reset button state
+			archiveDataBtn.disabled = false;
+			archiveDataBtn.textContent = originalText;
 		}
 	}
 });

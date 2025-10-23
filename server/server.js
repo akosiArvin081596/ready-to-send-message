@@ -9,7 +9,8 @@ const {
     getReportsByProvince,
     deleteReport,
     deleteAllReports,
-    resetAllReports
+    resetAllReports,
+    archiveAllReports
 } = require('./database');
 
 const app = express();
@@ -310,6 +311,32 @@ app.post('/api/reports/reset', (req, res) => {
     }
 });
 
+// Archive all active reports
+app.post('/api/reports/archive', (req, res) => {
+    try {
+        serverLogger.warn('Archiving all active reports');
+
+        const result = archiveAllReports();
+
+        serverLogger.info('All reports archived successfully', {
+            archivedCount: result.changes
+        });
+
+        res.json({
+            success: true,
+            message: `All reports archived successfully (${result.changes} reports archived)`,
+            archivedCount: result.changes
+        });
+    } catch (error) {
+        serverLogger.error('Error archiving all reports', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to archive reports',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+});
+
 // 404 handler
 app.use((req, res) => {
     serverLogger.warn('Route not found', {
@@ -362,10 +389,11 @@ app.listen(PORT, '0.0.0.0', () => {
 ║   - POST   /api/reports       (Update by province)   ║
 ║   - PUT    /api/reports/:code (Update by province)   ║
 ║   - POST   /api/reports/reset (Reset all to default) ║
+║   - POST   /api/reports/archive (Archive all active) ║
 ║   - DELETE /api/reports/:id                           ║
 ║   - DELETE /api/reports                               ║
 ║                                                       ║
-║   Database: 5 provinces initialized                  ║
+║   Database: 5 provinces initialized with archiving   ║
 ║   Logging: Enabled (timestamps & request tracking)  ║
 ║   Validation: Comprehensive province & data checks   ║
 ╚═══════════════════════════════════════════════════════╝

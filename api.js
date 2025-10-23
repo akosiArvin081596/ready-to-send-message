@@ -82,6 +82,12 @@ async function resetAllReports() {
     });
 }
 
+async function archiveAllReports() {
+    return apiRequest('/reports/archive', {
+        method: 'POST'
+    });
+}
+
 async function checkServerHealth() {
     return apiRequest('/health');
 }
@@ -97,5 +103,6 @@ window.API = {
     deleteReport,
     deleteAllReports,
     resetAllReports,
+    archiveAllReports,
     checkServerHealth
 };

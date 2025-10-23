@@ -31,7 +31,7 @@ function initializeDatabase() {
         db.exec(`
             CREATE TABLE IF NOT EXISTS reports (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                province_code TEXT NOT NULL UNIQUE,
+                province_code TEXT NOT NULL,
                 province_name TEXT NOT NULL,
                 situation_overview TEXT,
                 intensity TEXT,
@@ -54,10 +54,33 @@ function initializeDatabase() {
                 power_remarks TEXT,
                 water_interruption BOOLEAN DEFAULT 0,
                 water_remarks TEXT,
+                status TEXT DEFAULT 'active',
                 created_at TEXT DEFAULT (datetime('now', 'localtime')),
                 updated_at TEXT DEFAULT (datetime('now', 'localtime'))
             )
         `);
+
+        // Migration: Add status column if it doesn't exist (for existing databases)
+        try {
+            const checkStatus = db.prepare(`PRAGMA table_info(reports)`).all();
+            const hasStatusColumn = checkStatus.some(col => col.name === 'status');
+
+            if (!hasStatusColumn) {
+                logger.info('Adding status column to existing reports table');
+                db.exec(`ALTER TABLE reports ADD COLUMN status TEXT DEFAULT 'active'`);
+                logger.info('Status column added successfully');
+            }
+
+            // Check for UNIQUE constraint on province_code (from old schema)
+            const tableInfo = db.prepare(`PRAGMA table_info(reports)`).all();
+            const provinceCodeColumn = tableInfo.find(col => col.name === 'province_code');
+
+            if (provinceCodeColumn && provinceCodeColumn.notnull === 1) {
+                logger.debug('Province code column exists, archiving system is ready');
+            }
+        } catch (migrationError) {
+            logger.warn('Migration notice: if you have issues with archiving, you may need to delete the database file to reinitialize', migrationError.message);
+        }
 
         // Initialize with 5 provinces (CARAGA region)
         const provinces = [
@@ -291,14 +314,14 @@ function createReport(reportData) {
     return updateReport(reportData);
 }
 
-// Get all reports
+// Get all reports (only active ones)
 function getAllReports() {
     try {
         const reports = db.prepare(`
-            SELECT * FROM reports ORDER BY created_at DESC
+            SELECT * FROM reports WHERE status = 'active' ORDER BY created_at DESC
         `).all();
 
-        logger.debug('All reports retrieved', { count: reports.length });
+        logger.debug('All active reports retrieved', { count: reports.length });
 
         return reports.map(report => ({
             id: report.id,
@@ -328,7 +351,8 @@ function getAllReports() {
             waterInterruption: !!report.water_interruption,
             waterRemarks: report.water_remarks,
             createdAt: report.created_at,
-            updatedAt: report.updated_at
+            updatedAt: report.updated_at,
+            status: report.status
         }));
     } catch (error) {
         logger.error('Error retrieving all reports', error);
@@ -435,15 +459,37 @@ function resetAllReports() {
                 water_interruption = 0,
                 water_remarks = NULL,
                 updated_at = datetime('now', 'localtime')
+            WHERE status = 'active'
         `);
 
         const result = stmt.run();
 
-        logger.warn('All reports reset to default values', { resetCount: result.changes });
+        logger.warn('All active reports reset to default values', { resetCount: result.changes });
 
         return result;
     } catch (error) {
         logger.error('Error resetting all reports', error);
+        throw error;
+    }
+}
+
+// Archive all active reports (mark as archived)
+function archiveAllReports() {
+    try {
+        const stmt = db.prepare(`
+            UPDATE reports
+            SET status = 'archived',
+                updated_at = datetime('now', 'localtime')
+            WHERE status = 'active'
+        `);
+
+        const result = stmt.run();
+
+        logger.warn('All active reports archived', { archivedCount: result.changes });
+
+        return result;
+    } catch (error) {
+        logger.error('Error archiving all reports', error);
         throw error;
     }
 }
@@ -458,5 +504,6 @@ module.exports = {
     getReportsByProvince,
     deleteReport,
     deleteAllReports,
-    resetAllReports
+    resetAllReports,
+    archiveAllReports
 };
