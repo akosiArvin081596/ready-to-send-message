@@ -37,7 +37,7 @@ body {
 	min-height: 100vh;
 	/* padding: 1rem; */
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	justify-content: center;
 }
 
@@ -53,6 +53,9 @@ body {
 
 .form-card {
 	max-width: 900px;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
 }
 
 .header {
@@ -479,6 +482,8 @@ body {
 /* Dashboard Cards */
 .dashboard-content {
 	padding: 1.5rem;
+	flex: 1;
+	overflow-y: auto;
 }
 
 .card-grid {
