@@ -6,7 +6,8 @@
       "Bash(node:*)",
       "Bash(dir:*)",
       "Bash(ls:*)",
-      "Bash(del \"C:\\Users\\DSWDSRV-CARAGA\\Desktop\\Mobile\\server\\disaster_reports.db\")"
+      "Bash(del \"C:\\Users\\DSWDSRV-CARAGA\\Desktop\\Mobile\\server\\disaster_reports.db\")",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
