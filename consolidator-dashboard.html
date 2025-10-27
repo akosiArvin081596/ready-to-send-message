@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Consolidator Dashboard</title>
+		<link rel="stylesheet" href="styles.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
+	</head>
+	<body>
+		<div class="container">
+			<div class="form-card">
+				<div class="header">
+					<h1>Consolidated Reports Dashboard</h1>
+					<p>CARAGA Region (Region XIII)</p>
+				</div>
+
+				<div class="dashboard-content">
+					<h3 style="text-align: center; margin-bottom: 2rem; color: #555;">
+						Select Incident Type to View
+					</h3>
+
+					<div class="card-grid">
+						<!-- Earthquake Card - Active -->
+						<div class="disaster-card active" data-type="earthquake">
+							<div class="card-icon">
+								<i class="fas fa-house-crack"></i>
+							</div>
+							<h4 class="card-title">Earthquake</h4>
+						</div>
+
+						<!-- Weather Disturbance Card -->
+						<div class="disaster-card active" data-type="weather">
+							<div class="card-icon">
+								<i class="fas fa-cloud-showers-heavy"></i>
+							</div>
+							<h4 class="card-title">Weather Disturbance</h4>
+						</div>
+
+						<!-- Empty Card 1 - Disabled -->
+						<div class="disaster-card disabled empty">
+							<div class="card-icon">
+								<i class="fas fa-circle-plus"></i>
+							</div>
+							<h4 class="card-title">TBA</h4>
+							<span class="coming-soon">Coming Soon</span>
+						</div>
+
+						<!-- Empty Card 2 - Disabled -->
+						<div class="disaster-card disabled empty">
+							<div class="card-icon">
+								<i class="fas fa-circle-plus"></i>
+							</div>
+							<h4 class="card-title">TBA</h4>
+							<span class="coming-soon">Coming Soon</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Logout Button -->
+				<div style="margin-top: 2rem; text-align: center;">
+					<button id="logoutBtn" class="logout-btn">
+						<i class="fas fa-sign-out-alt"></i> Logout
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="consolidator-dashboard.js"></script>
+	</body>
+</html>

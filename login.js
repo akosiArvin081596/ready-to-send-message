@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.setItem('isLoggedIn', 'true');
         sessionStorage.setItem('loginTime', new Date().toISOString());
 
-        // Redirect to form page
-        window.location.href = 'form.html';
+        // Redirect to dashboard page
+        window.location.href = 'dashboard.html';
     }
 });

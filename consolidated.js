@@ -3,20 +3,45 @@ document.addEventListener("DOMContentLoaded", function () {
 	const noDataMessage = document.getElementById("noDataMessage");
 	const copyableData = document.getElementById("copyableData");
 	const copyDataBtn = document.getElementById("copyDataBtn");
-	const resetDataBtn = document.getElementById("resetDataBtn");
 	const provincesContainer = document.getElementById("provincesContainer");
+
+	// Get selected disaster type and update title
+	updatePageTitle();
 
 	// Initialize
 	loadReports();
 
 	// Event Listeners
 	copyDataBtn.addEventListener("click", copyToClipboard);
-	resetDataBtn.addEventListener("click", resetAllData);
+
+	// Reset button listener (if it exists)
+	const resetDataBtn = document.getElementById("resetDataBtn");
+	if (resetDataBtn) {
+		resetDataBtn.addEventListener("click", resetAllData);
+	}
 
 	// Archive button listener (if it exists)
 	const archiveDataBtn = document.getElementById("archiveDataBtn");
 	if (archiveDataBtn) {
 		archiveDataBtn.addEventListener("click", archiveAllData);
+	}
+
+	function updatePageTitle() {
+		const disasterType = sessionStorage.getItem('selectedDisasterType') || 'earthquake';
+		const reportTitle = document.getElementById('reportTitle');
+
+		if (reportTitle) {
+			switch (disasterType) {
+				case 'earthquake':
+					reportTitle.textContent = 'Earthquake Progress Report';
+					break;
+				case 'weather':
+					reportTitle.textContent = 'Weather Disturbance Progress Report';
+					break;
+				default:
+					reportTitle.textContent = 'Progress Report';
+			}
+		}
 	}
 
 	async function loadReports() {
@@ -137,8 +162,16 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	function generateCopyableText(reports) {
+		const disasterType = sessionStorage.getItem('selectedDisasterType') || 'earthquake';
 		let text = "Good day, Sec. Rex.\n\n";
-		text += "Following the magnitude ___ earthquake that was recorded in __________ , here are the latest situation updates per province:\n\n";
+
+		if (disasterType === 'earthquake') {
+			text += "Following the magnitude ___ earthquake that was recorded in __________ , here are the latest situation updates per province:\n\n";
+		} else if (disasterType === 'weather') {
+			text += "Following the weather disturbance __________ , here are the latest situation updates per province:\n\n";
+		} else {
+			text += "Here are the latest situation updates per province:\n\n";
+		}
 
 		// Group reports by province
 		const reportsByProvince = {};

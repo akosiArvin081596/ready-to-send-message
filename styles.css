@@ -101,7 +101,7 @@ body {
 	width: 100%;
 	padding: 0.75rem;
 	border: 1px solid var(--border-color);
-	border-radius: 0;
+	border-radius: 6px;
 	font-size: 1rem;
 	transition: all 0.2s;
 	font-family: inherit;
@@ -124,7 +124,7 @@ body {
 .btn {
 	padding: 0.75rem 1.5rem;
 	border: none;
-	border-radius: 0;
+	border-radius: 6px;
 	font-size: 1rem;
 	font-weight: 500;
 	cursor: pointer;
@@ -180,6 +180,27 @@ body {
 .btn-sm {
 	padding: 0.5rem 1rem;
 	font-size: 0.875rem;
+}
+
+.logout-btn {
+	padding: 0.5rem 1.25rem;
+	border: none;
+	border-radius: 6px;
+	font-size: 0.875rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s;
+	background-color: var(--secondary-color);
+	color: white;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.logout-btn:hover {
+	background-color: #475569;
+	transform: translateY(-1px);
+	box-shadow: var(--shadow);
 }
 
 /* Form Sections */
@@ -263,7 +284,7 @@ body {
 	width: 100%;
 	padding: 0.75rem;
 	border: 1px solid var(--border-color);
-	border-radius: 0;
+	border-radius: 6px;
 	font-size: 1rem;
 	transition: all 0.2s;
 }
@@ -455,6 +476,90 @@ body {
 	border: 1px solid #ef4444;
 }
 
+/* Dashboard Cards */
+.dashboard-content {
+	padding: 1.5rem;
+}
+
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1.5rem;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.disaster-card {
+	background: var(--card-bg);
+	border: 2px solid var(--border-color);
+	border-radius: 12px;
+	padding: 2rem 1rem;
+	text-align: center;
+	transition: all 0.3s ease;
+	position: relative;
+	min-height: 180px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.disaster-card.active {
+	cursor: pointer;
+	border-color: var(--primary-color);
+}
+
+.disaster-card.active:hover {
+	transform: translateY(-4px);
+	box-shadow: var(--shadow-lg);
+	border-color: var(--primary-dark);
+	background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(30, 64, 175, 0.05));
+}
+
+.disaster-card.disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	background-color: var(--bg-color);
+}
+
+.card-icon {
+	font-size: 3.5rem;
+	margin-bottom: 1rem;
+	color: var(--primary-color);
+	transition: all 0.3s ease;
+}
+
+.disaster-card.active:hover .card-icon {
+	transform: scale(1.1);
+	color: var(--primary-dark);
+}
+
+.disaster-card.disabled .card-icon {
+	color: var(--secondary-color);
+}
+
+.card-title {
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin: 0;
+}
+
+.disaster-card.disabled .card-title {
+	color: var(--text-secondary);
+}
+
+.coming-soon {
+	display: inline-block;
+	margin-top: 0.5rem;
+	font-size: 0.75rem;
+	color: var(--text-secondary);
+	background: var(--border-color);
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-weight: 500;
+}
+
 /* Responsive Design */
 @media (min-width: 640px) {
 	.container {
@@ -489,6 +594,14 @@ body {
 
 	.checkbox-group {
 		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.card-grid {
+		gap: 2rem;
+	}
+
+	.dashboard-content {
+		padding: 2rem;
 	}
 }
 

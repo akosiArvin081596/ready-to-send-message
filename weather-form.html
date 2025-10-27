@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Disaster Report Form</title>
+		<title>Weather Disturbance Report Form</title>
 		<link rel="stylesheet" href="styles.css" />
 	</head>
 	<body>
@@ -25,7 +25,7 @@
 							</svg>
 						</button>
 					</div>
-					<h1>Earthquake Progress Report</h1>
+					<h1>Weather Disturbance Report</h1>
 					<p id="provinceDisplay"></p>
 				</div>
 
@@ -38,39 +38,38 @@
 								id="situationOverview"
 								name="situationOverview"
 								rows="4"
-								placeholder="Provide a brief overview of the situation in the province..."
+								placeholder="Provide a brief overview of the weather situation in the province..."
 							></textarea>
 						</div>
 					</div>
 
-					<!-- Earthquake Intensity - Felt Options -->
+					<!-- Weather Intensity - Options -->
 					<div class="form-section">
-						<h3>Earthquake Intensity (Select felt level)</h3>
+						<h3>Weather Intensity Level</h3>
 						<div class="form-group">
 							<label for="intensity">Intensity Level:</label>
 							<select id="intensity" name="intensity" required>
 								<option value="">
 									-- Select Intensity Level --
 								</option>
-								<option value="Not felt">Not felt</option>
-								<option value="Slightly felt">
-									Slightly felt
+								<option value="Light rainfall">Light rainfall</option>
+								<option value="Moderate rainfall">
+									Moderate rainfall
 								</option>
-								<option value="Weak tremor">Weak tremor</option>
-								<option value="Lightly felt">
-									Lightly felt
+								<option value="Heavy rainfall">Heavy rainfall</option>
+								<option value="Intense rainfall">
+									Intense rainfall
 								</option>
-								<option value="Moderately felt">
-									Moderately felt
+								<option value="Torrential rainfall">
+									Torrential rainfall
 								</option>
-								<option value="Strongly felt">
-									Strongly felt
+								<option value="Tropical depression">Tropical depression</option>
+								<option value="Tropical storm">Tropical storm</option>
+								<option value="Severe tropical storm">Severe tropical storm</option>
+								<option value="Typhoon">
+									Typhoon
 								</option>
-								<option value="Very strong">Very strong</option>
-								<option value="Violent">Violent</option>
-								<option value="Extreme shaking">
-									Extreme shaking
-								</option>
+								<option value="Super typhoon">Super typhoon</option>
 							</select>
 						</div>
 					</div>
@@ -343,7 +342,7 @@
 
 		<script src="psgc-data.js"></script>
 		<script src="api.js"></script>
-		<script src="form.js"></script>
+		<script src="weather-form.js"></script>
 		<script>
 			// Add hover effects and handlers for navigation buttons
 			document.addEventListener('DOMContentLoaded', function() {
