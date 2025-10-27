@@ -80,6 +80,29 @@ document.addEventListener("DOMContentLoaded", function () {
 		return count === 1 ? singular : plural;
 	}
 
+	function isReportEmpty(report) {
+		// Check if report has no meaningful data (all default/empty values)
+		const hasNoSituationOverview = !report.situationOverview || report.situationOverview.trim() === '';
+		const hasNoIntensity = !report.intensity || report.intensity.trim() === '';
+		const hasNoCoordination = !report.coordinationNotes || report.coordinationNotes.trim() === '';
+		const hasNoAffected = (!report.affectedFamilies || report.affectedFamilies === 0) &&
+		                      (!report.affectedPersons || report.affectedPersons === 0);
+		const hasNoDamage = (!report.damagedTotally || report.damagedTotally === 0) &&
+		                    (!report.damagedPartially || report.damagedPartially === 0);
+		const hasNoCasualties = report.noCasualties ||
+		                        ((!report.injured || report.injured === 0) &&
+		                         (!report.wounded || report.wounded === 0) &&
+		                         (!report.dead || report.dead === 0));
+		const hasNoAlerts = (!report.tsunamiRemarks || report.tsunamiRemarks.trim() === '') &&
+		                    (!report.suspensionRemarks || report.suspensionRemarks.trim() === '') &&
+		                    (!report.galeRemarks || report.galeRemarks.trim() === '') &&
+		                    (!report.powerRemarks || report.powerRemarks.trim() === '') &&
+		                    (!report.waterRemarks || report.waterRemarks.trim() === '');
+
+		return hasNoSituationOverview && hasNoIntensity && hasNoCoordination &&
+		       hasNoAffected && hasNoDamage && hasNoCasualties && hasNoAlerts;
+	}
+
 	function generateReportView(reports) {
 		// Group reports by province
 		const reportsByProvince = {};
@@ -190,6 +213,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// Province name
 			text += `${provinceName}\n\n`;
+
+			// Check if report is empty (no meaningful data)
+			if (isReportEmpty(report)) {
+				// Show simplified message for provinces with no data
+				text += `On-going coordination with PLGU & LGUs, through our DRRS Social Worker\n\n`;
+				text += "- ".repeat(10).trim() + "\n\n";
+				return; // Skip the rest of the detailed output
+			}
 
 			// Province Situation Overview
 			if (report.situationOverview) {
